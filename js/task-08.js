@@ -1,49 +1,47 @@
-let amount = 0
-
 const input = document.querySelector('[type="number"]')
 const buttonRender = document.querySelector('[data-action="render"]')
 const buttonDestroy = document.querySelector('[data-action="destroy"]')
 const elementBox = document.querySelector('#boxes')
 
-console.log(buttonRender)
-console.log(buttonDestroy)
-console.log(input)
+const elementBoxObj = {
+  amount: 0,
+  boxSize: 30,
 
-function createBoxes(amount) {
-  let array = []
-  let size = 30
-  // создали див
-  for (let i = 1; i < amount; i += 1) {
-    const newBox = document.createElement('div')
-    newBox.style.backgroundColor = `rgb(${getRandom(0, 255)}, ${getRandom(0, 255)}, ${getRandom(0, 255)})`
+  getInputValue(event) {
+    this.amount = event.target.value
+  },
 
-    if (i === 1) {
-      newBox.style.width = `${size}px`
-      newBox.style.height = `${size}px`
-    } else {
-      size += 10
-      newBox.style.width = `${size}px`
-      newBox.style.height = `${size}px`
+  createBoxes(amount) {
+    amount = elementBoxObj.amount
+
+    for (let i = 1; i <= amount; i += 1) {
+      const newBox = document.createElement('div')
+
+      const red = Math.floor(Math.random() * (255 - 0 + 1)) + 0
+      const green = Math.floor(Math.random() * (255 - 0 + 1)) + 0
+      const blue = Math.floor(Math.random() * (255 - 0 + 1)) + 0
+
+      newBox.style.backgroundColor = 'rgb(' + red + ', ' + green + ', ' + blue + ')'
+
+      if (i === 1) {
+        newBox.style.width = `${elementBoxObj.boxSize}px`
+        newBox.style.height = `${elementBoxObj.boxSize}px`
+      } else {
+        newBox.style.width = `${(elementBoxObj.boxSize += 10)}px`
+        newBox.style.height = `${(elementBoxObj.boxSize += 10)}px`
+      }
+
+      elementBox.append(newBox)
     }
+  },
 
-    array.push(newBox)
-
-    elementBox.append(...array)
-  }
-
-  // вставили дивы в контейнер
-  elementBox.append()
+  destroyBoxes() {
+    elementBox.innerHTML = ''
+    input.value = ''
+    elementBoxObj.boxSize = 30
+  },
 }
-function destroyBoxes() {}
 
-input.addEventListener('input', event => {
-  console.log(event.target.value)
-  amount = event.target.value
-  console.log(amount)
-})
-
-console.log(amount)
-buttonRender.addEventListener('click', () => {
-  console.log('click')
-})
-buttonDestroy.addEventListener('click', () => {})
+input.addEventListener('change', elementBoxObj.getInputValue.bind(elementBoxObj))
+buttonRender.addEventListener('click', elementBoxObj.createBoxes.bind(elementBoxObj))
+buttonDestroy.addEventListener('click', elementBoxObj.destroyBoxes.bind(elementBoxObj))
